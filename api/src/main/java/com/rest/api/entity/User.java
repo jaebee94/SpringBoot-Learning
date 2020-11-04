@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Table(name = "user") // 'user' 테이블과 매핑됨을 명시
 public class User implements UserDetails {
     @Id // primaryKey
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // pk생성전략을 DB에 위임한다는 의미. mysql로 보면 pk 필드를 auto_increment로 설정해 놓은 경우와 같다/
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // pk생성전략을 DB에 위임한다는 의미. mysql로 보면 pk 필드를 auto_increment로 설정해 놓은 경우와 같다.
     private long msrl;
     @Column(nullable = false, unique = true, length = 30) // uid column을 명시. 필수이고 유니크한 필드이며 길이는 30.
     private String uid;
@@ -32,10 +32,15 @@ public class User implements UserDetails {
     private String password;
     @Column(nullable = false, length = 100) // name column을 명시. 필수이고 길이는 100.
     private String name;
+    @Column(nullable = false, length = 100)
+    private String gender;
+    @Column(nullable = false, length = 30)
+    private int birth;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

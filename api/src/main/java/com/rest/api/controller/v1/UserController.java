@@ -37,26 +37,15 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
     })
-    @ApiOperation(value = "회원 단건 조회", notes = "회원번호(msrl)로 회원을 조회한다.")
+    @ApiOperation(value = "회원 단건 조회", notes = "회원번호(msrl)로 회원을 조회한다")
     @GetMapping(value = "/user")
-    public SingleResult<User> findUserById(@ApiParam(value = "언어", defaultValue = "ko") @RequestParam String lang) {
+    public SingleResult<User> findUser() {
         // SecurityContext에서 인증받은 회원의 정보를 얻어온다.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
-        // 결과 데이터가 단건일 경우 getSingleResult를 이용해서 결과를 출력한다.
+        // 결과데이터가 단일건인경우 getSingleResult를 이용해서 결과를 출력한다.
         return responseService.getSingleResult(userJpaRepo.findByUid(id).orElseThrow(CUserNotFoundException::new));
     }
-
-//    @ApiOperation(value = "회원 입력", notes = "회원을 입력한다.")
-//    @PostMapping(value = "/user")
-//    public User save(@ApiParam(value = "회원아이디", required = true) @RequestParam String uid,
-//                     @ApiParam(value = "회원이름", required = true) @RequestParam String name) {
-//        User user = User.builder()
-//                .uid(uid)
-//                .name(name)
-//                .build();
-//        return userJpaRepo.save(user);
-//    }
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "X-AUTH-TOKEN", value = "로그인 성공 후 access_token", required = true, dataType = "String", paramType = "header")
@@ -65,10 +54,14 @@ public class UserController {
     @PutMapping(value = "/user")
     public SingleResult<User> modify(
             @ApiParam(value = "회원번호", required = true) @RequestParam long msrl,
-            @ApiParam(value = "회원이름", required = true) @RequestParam String name) {
+            @ApiParam(value = "회원이름", required = true) @RequestParam String name,
+            @ApiParam(value = "성별", required = true) @RequestParam String gender,
+            @ApiParam(value = "출생연도", required = true) @RequestParam int birth) {
         User user = User.builder()
                 .msrl(msrl)
                 .name(name)
+                .gender(gender)
+                .birth(birth)
                 .build();
         return responseService.getSingleResult(userJpaRepo.save(user));
     }
